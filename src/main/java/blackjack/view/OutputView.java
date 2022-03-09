@@ -5,7 +5,11 @@ import static java.util.stream.Collectors.joining;
 import blackjack.domain.Card;
 import blackjack.domain.Dealer;
 import blackjack.domain.Player;
+import blackjack.domain.Score;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OutputView {
 
@@ -46,6 +50,24 @@ public class OutputView {
         for (Player player : players) {
             createPlayerResultInfo(player);
         }
+    }
+
+    public static void printDealerScore(Map<Score, Long> result) {
+        Map<Score, Long> results = new EnumMap<>(result);
+        String resultInfo = results.keySet().stream()
+                .map(score -> results.get(score) + score.getValue())
+                .collect(Collectors.joining(" "));
+
+        System.out.printf("## 최종 승패\n딜러: %s\n", resultInfo);
+    }
+
+    public static void printPlayerScore(Map<String, Score> results) {
+        String resultInfo = results.keySet()
+                .stream()
+                .map(name -> name + ": " + results.get(name).getValue())
+                .collect(Collectors.joining("\n"));
+
+        System.out.println(resultInfo);
     }
 
     private static void createPlayerResultInfo(Player player) {

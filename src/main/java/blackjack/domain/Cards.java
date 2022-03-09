@@ -25,4 +25,11 @@ public class Cards {
     public List<Card> getValue() {
         return Collections.unmodifiableList(value);
     }
+
+    @Override
+    public String toString() {
+        return "Cards{" +
+                "value=" + value +
+                '}';
+    }
 }

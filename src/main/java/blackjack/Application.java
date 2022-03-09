@@ -32,6 +32,9 @@ public class Application {
         playing(deck, dealer);
 
         OutputView.printResultInfo(dealer, players);
+
+        OutputView.printDealerScore(dealer.createDealerResult(players));
+        OutputView.printPlayerScore(dealer.createResult(players));
     }
 
     public static void playing(Deck deck, Player player) {

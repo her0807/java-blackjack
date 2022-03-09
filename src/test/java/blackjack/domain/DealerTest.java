@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,4 +47,25 @@ public class DealerTest {
 
         assertThat(dealer.getCards().size()).isEqualTo(3);
     }
+
+    @DisplayName("player 최종 승패 여부를 계산한다.")
+    @Test
+    void 플레이어_승패_여부() {
+        // given
+        List<Card> cards = List.of(Card.of(Denomination.ACE, Suit.CLOVER), Card.of(Denomination.KING, Suit.DIAMOND));
+        List<Card> playerCards = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+        Dealer dealer = new Dealer(cards);
+        List<Player> players = List.of(new Player("sudal", cards), new Player("mat", playerCards));
+        // when
+
+        Map<String, Score> result = dealer.createResult(players);
+        Map<Score, Long> dealerResult = dealer.createDealerResult(players);
+
+        System.out.println(result);
+        System.out.println(dealerResult);
+
+    }
+
+
 }
