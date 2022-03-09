@@ -1,21 +1,20 @@
 package blackjack.domain;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Arrays;
+
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Card {
 
     public static final Set<Card> VALUES;
 
     static {
-        Set<Card> cards = new HashSet<>();
-        for (Denomination denomination : Denomination.values()) {
-            createCard(cards, denomination);
-        }
-
-        VALUES = Collections.unmodifiableSet(cards);
+        VALUES = Arrays.stream(Suit.values())
+                .flatMap(suit -> Arrays.stream(Denomination.values())
+                        .map(number -> new Card(number, suit)))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private final Denomination denomination;
@@ -24,13 +23,6 @@ public class Card {
     private Card(Denomination denomination, Suit suit) {
         this.denomination = denomination;
         this.suit = suit;
-    }
-
-    private static void createCard(Set<Card> cards, Denomination denomination) {
-        for (Suit suit : Suit.values()) {
-            Card card = new Card(denomination, suit);
-            cards.add(card);
-        }
     }
 
     public static Card of(Denomination denomination, Suit suit) {
