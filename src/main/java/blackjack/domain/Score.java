@@ -8,7 +8,7 @@ public enum Score {
     WIN("승", (totalScore, targetScore) -> !checkBust(totalScore) && totalScore > targetScore),
     TIE("무", (totalScore, targetScore) -> totalScore == targetScore),
     LOSE("패", (totalScore, targetScore)
-            -> checkBust(targetScore) || (totalScore < targetScore && !checkBust(targetScore)));
+            -> checkBust(totalScore) || (totalScore < targetScore && !checkBust(targetScore)));
 
     private final String value;
     private final BiPredicate<Integer, Integer> condition;
