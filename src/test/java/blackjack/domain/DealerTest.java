@@ -48,24 +48,115 @@ public class DealerTest {
         assertThat(dealer.getCards().size()).isEqualTo(3);
     }
 
-    @DisplayName("player 최종 승패 여부를 계산한다.")
+
+    @DisplayName("딜러만 버스트 일 경우 패배한다.")
     @Test
-    void 플레이어_승패_여부() {
-        // given
-        List<Card> cards = List.of(Card.of(Denomination.ACE, Suit.CLOVER), Card.of(Denomination.KING, Suit.DIAMOND));
-        List<Card> playerCards = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
+    void 딜러_승패_여부_버스트_패() {
+        //30점
+        List<Card> bustCards = List.of(Card.of(Denomination.KING, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND),
+                Card.of(Denomination.JACK, Suit.DIAMOND));
+        //18점
+        List<Card> normalCards = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
                 Card.of(Denomination.KING, Suit.DIAMOND));
-        Dealer dealer = new Dealer(cards);
-        List<Player> players = List.of(new Player("sudal", cards), new Player("mat", playerCards));
-        // when
 
-        Map<String, Score> result = dealer.createResult(players);
-        Map<Score, Long> dealerResult = dealer.createDealerResult(players);
+        Dealer dealer = new Dealer(bustCards);
+        Player player = new Player("sudal", normalCards);
 
-        System.out.println(result);
-        System.out.println(dealerResult);
+        Score score = dealer.createResult(player.getTotalScore());
 
+        assertThat(score).isEqualTo(Score.LOSE);
     }
 
+    @DisplayName("딜러, 플레이어 모두 버스트일 경우 승리한다.")
+    @Test
+    void 딜러_승패_여부_둘다_버스트_승() {
+        //30점
+        List<Card> bustValueByDealer = List.of(Card.of(Denomination.KING, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND),
+                Card.of(Denomination.JACK, Suit.DIAMOND));
+        //28점
+        List<Card> bustValueByPlayer = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.HEART), Card.of(Denomination.TEN, Suit.HEART));
+
+        Dealer dealer = new Dealer(bustValueByDealer);
+        Player player = new Player("sudal", bustValueByPlayer);
+
+        Score score = dealer.createResult(player.getTotalScore());
+
+        assertThat(score).isEqualTo(Score.WIN);
+    }
+
+    @DisplayName("플레이어만 버스트이면 승리한다.")
+    @Test
+    void 딜러_승패_여부_버스트_승() {
+        //12점
+        List<Card> minValueCards = List.of(Card.of(Denomination.FOUR, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+        //22점
+        List<Card> maxValueCards = List.of(Card.of(Denomination.KING, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND), Card.of(Denomination.TWO, Suit.HEART));
+
+        Dealer dealer = new Dealer(minValueCards);
+        Player player = new Player("sudal", maxValueCards);
+
+        Score score = dealer.createResult(player.getTotalScore());
+
+        assertThat(score).isEqualTo(Score.WIN);
+    }
+
+    @DisplayName("딜러보다 플레이어의 점수가 높으면 패배한다.")
+    @Test
+    void 딜러_승패_여부_점수_패() {
+        //12점
+        List<Card> minValueCards = List.of(Card.of(Denomination.FOUR, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+        //18점
+        List<Card> maxValueCards = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+
+        Dealer dealer = new Dealer(minValueCards);
+        Player player = new Player("sudal", maxValueCards);
+
+        Score score = dealer.createResult(player.getTotalScore());
+
+        assertThat(score).isEqualTo(Score.LOSE);
+    }
+
+    @DisplayName("딜러가 플레이어보다 점수가 높으면 승리한다.")
+    @Test
+    void 플레이어_승패_여부_점수_승() {
+        //12점
+        List<Card> minValueCards = List.of(Card.of(Denomination.FOUR, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+        //18점
+        List<Card> maxValueCards = List.of(Card.of(Denomination.EIGHT, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+
+        Dealer dealer = new Dealer(maxValueCards);
+        Player player = new Player("sudal", minValueCards);
+
+        Score score = dealer.createResult(player.getTotalScore());
+
+        assertThat(score).isEqualTo(Score.WIN);
+    }
+
+    @DisplayName("딜러와 플레이어 점수가 같으면 무.")
+    @Test
+    void 딜러_승패_여부_점수_무() {
+        //12점
+        List<Card> tieValueByPlayer = List.of(Card.of(Denomination.FOUR, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+        //12점
+        List<Card> tieValueByDealer = List.of(Card.of(Denomination.FOUR, Suit.CLOVER),
+                Card.of(Denomination.KING, Suit.DIAMOND));
+
+        Dealer dealer = new Dealer(tieValueByDealer);
+        Player player = new Player("sudal", tieValueByPlayer);
+
+        Score score = dealer.createResult(player.getTotalScore());
+
+        assertThat(score).isEqualTo(Score.TIE);
+    }
 
 }

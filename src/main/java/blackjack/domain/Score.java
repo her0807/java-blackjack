@@ -1,42 +1,27 @@
 package blackjack.domain;
 
 import java.util.Arrays;
-import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public enum Score {
 
-    WIN("승", (totalScore, targetScore) -> !checkBust(totalScore) && totalScore > targetScore),
-    TIE("무", (totalScore, targetScore) -> totalScore == targetScore),
-    LOSE("패", (totalScore, targetScore)
-            -> checkBust(totalScore) || (totalScore < targetScore && !checkBust(targetScore)));
+    WIN("승", (score) -> score > 0),
+    TIE("무", (score) -> score == 0),
+    LOSE("패", (score) -> score < 0);
 
     private final String value;
-    private final BiPredicate<Integer, Integer> condition;
+    private final Predicate<Integer> condition;
 
-    Score(String value, BiPredicate<Integer, Integer> condition) {
+    Score(String value, Predicate<Integer> condition) {
         this.value = value;
         this.condition = condition;
     }
 
-    public static Score of(int totalScore, int targetTotalScore) {
-        if (checkBust(totalScore)) {
-            return Score.LOSE;
-        }
+    public static Score of(int targetScore) {
         return Arrays.stream(values())
-                .filter(score -> score.condition.test(totalScore, targetTotalScore))
+                .filter(score -> score.condition.test(targetScore))
                 .findAny()
-                .get();
-    }
-
-    public static Score ofDealer(int totalScore, int targetTotalScore) {
-        if (checkBust(targetTotalScore)) {
-            return Score.WIN;
-        }
-
-        return Arrays.stream(values())
-                .filter(score -> score.condition.test(totalScore, targetTotalScore))
-                .findAny()
-                .get();
+                .orElseThrow(() -> new IllegalArgumentException("결과가 정상적으로 나오지 않았습니다."));
     }
 
     private static boolean checkBust(int score) {

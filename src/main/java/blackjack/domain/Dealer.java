@@ -1,9 +1,6 @@
 package blackjack.domain;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.List;
-import java.util.Map;
 
 public class Dealer {
     public static final int DRAWABLE_LIMIT_VALUE = 16;
@@ -25,17 +22,18 @@ public class Dealer {
         cards.combine(card);
     }
 
-    public Map<String, Score> createResult(List<Player> players) {
-        int dealerScore = getTotalScore();
-        return players.stream()
-                .collect(toMap(player -> player.getName(), player -> Score.of(player.getTotalScore(), dealerScore)));
+    public Score createResult(int playScore) {
+        if (playScore > 21) {
+            return Score.WIN;
+        }
+
+        if (getTotalScore() > 21) {
+            return Score.LOSE;
+        }
+
+        return Score.of(getTotalScore() - playScore);
     }
 
-    public Map<Score, Long> createDealerResult(List<Player> players) {
-        int dealerScore = getTotalScore();
-        return players.stream()
-                .collect(groupingBy(player -> Score.ofDealer(dealerScore, player.getTotalScore()), counting()));
-    }
 
     public List<Card> getCards() {
         return cards.getValue();

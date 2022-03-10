@@ -26,6 +26,18 @@ public class Player {
         cards.combine(card);
     }
 
+    public Score createResult(int dealerScore) {
+        if (getTotalScore() > 21) {
+            return Score.LOSE;
+        }
+
+        if (dealerScore > 21) {
+            return Score.WIN;
+        }
+
+        return Score.of(getTotalScore() - dealerScore);
+    }
+
     public String getName() {
         return name;
     }

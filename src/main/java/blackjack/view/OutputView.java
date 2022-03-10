@@ -58,7 +58,7 @@ public class OutputView {
                 .map(score -> results.get(score) + score.getValue())
                 .collect(Collectors.joining(" "));
 
-        System.out.printf("## 최종 승패\n딜러: %s\n", resultInfo);
+        System.out.printf("\n## 최종 승패\n딜러: %s\n", resultInfo);
     }
 
     public static void printPlayerScore(Map<String, Score> results) {
@@ -85,6 +85,5 @@ public class OutputView {
 
         System.out.println("딜러: " + cardsInfo + " - 결과: " + dealer.getTotalScore());
     }
-
 }
 
